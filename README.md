@@ -1,24 +1,20 @@
 # AgentForge
 
-A **stateful multi-agent workflow built with [LangGraph](https://langchain-ai.github.io/langgraph/)** — conditional routing, persistent cross-turn memory, real tool-calling, and a RAG retrieval step grounded in a document corpus. It ships with a **real, measured evaluation**: the graph is run against a held-out set of scripted scenarios and scored on routing accuracy, tool-call accuracy, and task-completion rate.
+AgentForge is a multi-agent assistant built on [LangGraph](https://langchain-ai.github.io/langgraph/). A single graph takes a user message, works out what kind of request it is, and routes it to one of three specialist agents: one that calls tools (a calculator and a unit converter), one that answers from a document corpus using retrieval (RAG), and one that just holds a conversation. The graph keeps memory across turns, and the repo ships with a test harness that measures how well the routing and tool use actually behave.
 
-Everything runs **locally against [Ollama](https://ollama.com/)** — no API keys, no cloud calls — so the evaluation is fully reproducible on your own machine.
+Everything runs locally through [Ollama](https://ollama.com/), so there are no API keys and no external calls. The evaluation can be reproduced on any machine with the same setup.
 
-> **Honesty note.** This is a scoped portfolio project. The evaluation is a **small scripted set (22 scenarios), not a production-scale benchmark**, run against a single local model (`gemma4:12b`). Every number in this README and in [`results/`](results/) comes from an actual run of the code — see [Evaluation](#evaluation). See [Limitations](#limitations) before citing any figure.
+## How it works
 
----
+Every turn starts at a router. The router classifies the message and writes a route into the graph state but produces no answer itself. Conditional edges then send the turn to the matching agent:
 
-## What the graph does
-
-A single user turn flows through a **router** that classifies it and then hands off — via **conditional edges** — to one of three specialist agents:
-
-| Route | Agent | What it does |
+| Route | Agent | Behavior |
 |---|---|---|
-| `tool_agent` | Tool-calling agent | Calls real LangChain tools: `calculator` (AST-safe arithmetic) or `unit_converter` (length / mass / temperature). |
-| `rag_agent` | Retrieval agent | Retrieves from a **persistent Chroma vector store** over a company-handbook corpus and answers grounded strictly in the retrieved context. |
-| `chat_agent` | Conversational agent | Answers directly, relying on **conversation memory** (no tools, no retrieval). |
+| `tool_agent` | Tool-calling agent | Calls real LangChain tools: `calculator` (AST-based arithmetic, no `eval`) or `unit_converter` (length, mass, temperature). |
+| `rag_agent` | Retrieval agent | Retrieves from a persistent Chroma vector store over the document corpus and answers using only the retrieved text. |
+| `chat_agent` | Conversational agent | Answers directly from the conversation so far. No tools, no retrieval. |
 
-**Memory** is provided by a LangGraph `SqliteSaver` checkpointer keyed on `thread_id`, so context is retained **across turns and across process restarts** (verified — see below).
+Memory is handled by a LangGraph `SqliteSaver` checkpointer keyed on a thread id, so a conversation keeps its context across turns and across restarts of the process.
 
 ## Architecture
 
@@ -47,56 +43,58 @@ A single user turn flows through a **router** that classifies it and then hands 
                                             ▼
                                            END
 
-   state: messages (add_messages reducer) · route · retrieved_context · tool_calls_made
+   state: messages (add_messages reducer), route, retrieved_context, tool_calls_made
    memory: SqliteSaver checkpointer, scoped per thread_id (persists across runs)
 ```
 
-### Stack
-- **Orchestration:** LangGraph `StateGraph` + `ToolNode`, `SqliteSaver` checkpointer
-- **LLM:** local Ollama `gemma4:12b` (native tool-calling), temperature 0 for reproducibility
-- **Embeddings:** local Ollama `nomic-embed-text`
-- **Vector store:** persistent **Chroma** collection over 7 markdown documents
-- **Tools:** LangChain `@tool` functions (`calculator`, `unit_converter`)
+### Components
 
-### Layout
+- Orchestration: LangGraph `StateGraph` and `ToolNode`, with a `SqliteSaver` checkpointer.
+- Model: `gemma4:12b` served by Ollama, with native tool-calling, run at temperature 0.
+- Embeddings: `nomic-embed-text` served by Ollama.
+- Vector store: a persistent Chroma collection built from the markdown corpus.
+- Tools: two LangChain tools, `calculator` and `unit_converter`.
+
+### Project layout
+
 ```
 agentforge/
-  state.py      # AgentState schema + routing/tool taxonomy (the shared contract)
-  config.py     # models, paths, all config
+  state.py      # AgentState schema plus the routing/tool taxonomy
+  config.py     # models, paths, and other settings
   tools.py      # calculator + unit_converter (LangChain tools)
-  rag.py        # Chroma vector store: build / retrieve
+  rag.py        # Chroma vector store: build and retrieve
   graph.py      # the LangGraph graph: router, specialists, memory
   cli.py        # interactive multi-turn chat
-data/corpus/    # the document corpus ("Helix Dynamics" handbook, fictional)
+data/corpus/    # the document corpus (a fictional "Helix Dynamics" handbook)
 eval/
-  scenarios.json  # 22 held-out scripted scenarios (expected route/tool/answer)
-  evaluate.py     # evaluation engine + metrics
+  scenarios.json  # the 22 test scenarios (expected route/tool/answer)
+  evaluate.py     # the evaluation engine and metrics
 scripts/
   ingest.py     # build the vector store
-  run_eval.py   # run the full evaluation -> results/
-results/        # results.json + results.md (generated from a real run)
-tests/          # structural smoke tests (no LLM required)
-docs/           # architecture & contracts
+  run_eval.py   # run the full evaluation and write to results/
+results/        # results.json and results.md from the latest run
+tests/          # structural smoke tests (no model required)
+docs/           # architecture notes
 ```
 
-> **About the corpus.** It's a **fictional** company handbook ("Helix Dynamics"). That's deliberate: because the facts can't be known from the model's pretraining, a correct RAG answer is evidence that **retrieval actually worked** rather than the model recalling the web.
-
----
+The corpus is a made-up company handbook for a fictional company called Helix Dynamics. Using invented facts is deliberate: if the model answers a handbook question correctly, it had to get the answer from retrieval rather than from anything it saw during training.
 
 ## Setup
 
-### Prerequisites
-- [Ollama](https://ollama.com/) installed and running
-- [`uv`](https://docs.astral.sh/uv/) (used for the virtualenv)
-- Python 3.12 (provisioned by `uv`)
+### Requirements
+
+- [Ollama](https://ollama.com/), installed and running
+- [`uv`](https://docs.astral.sh/uv/)
+- Python 3.12 (uv will provision it)
 
 ### Install
+
 ```bash
 # 1. Clone
 git clone https://github.com/CR1502/AgentForge.git
 cd AgentForge
 
-# 2. Pull the local models (chat + embeddings)
+# 2. Pull the local models (chat and embeddings)
 ollama pull gemma4:12b
 ollama pull nomic-embed-text
 
@@ -108,73 +106,68 @@ uv pip install -r requirements.txt
 .venv/bin/python scripts/ingest.py --reset
 ```
 
-A `Makefile` wraps these: `make setup`, `make ingest`, `make chat`, `make eval`, `make test`.
+The `Makefile` wraps the common commands: `make setup`, `make ingest`, `make chat`, `make eval`, and `make test`.
 
-> Dependencies are pinned in [`requirements.txt`](requirements.txt) to the exact versions that produced the committed results (LangGraph/LangChain **1.x**). A full transitive lock is in [`requirements.lock.txt`](requirements.lock.txt).
+Dependencies are pinned in [`requirements.txt`](requirements.txt) to the versions used to produce the results in this repo (LangGraph and LangChain 1.x). The full resolved set is in [`requirements.lock.txt`](requirements.lock.txt).
 
-## Usage
+## Running it
 
-**Interactive chat** (demonstrates routing + persistent memory):
+Interactive chat:
+
 ```bash
 .venv/bin/python -m agentforge.cli
-# ... it prints a thread id; resume that conversation later with:
+# it prints a thread id; resume that conversation later with:
 .venv/bin/python -m agentforge.cli --thread <that-id>
 ```
-Each reply prints a dim trace line showing the chosen route and any tools called.
 
-**Run the evaluation** (regenerates `results/`):
+Each reply also prints the route it took and any tools it called.
+
+Run the evaluation (this regenerates `results/`):
+
 ```bash
 .venv/bin/python scripts/run_eval.py
 ```
 
-**Structural smoke tests** (fast, no LLM):
+Smoke tests (fast, no model needed):
+
 ```bash
 .venv/bin/python -m pytest tests/ -q
 ```
 
----
-
 ## Evaluation
 
-### Methodology
-- **Held-out set:** 22 scripted scenarios in [`eval/scenarios.json`](eval/scenarios.json), each declaring the *expected* route, the *expected* tool call (or none), and substrings the final answer must contain. Distribution: 5 calculator, 4 unit-converter, 7 RAG, 3 chat, 3 multi-turn memory.
-- **Execution:** each scenario runs on its own `thread_id` against the compiled graph (an in-memory checkpointer, so runs are repeatable and don't touch your real memory DB). Multi-turn scenarios replay their turns in order on one thread, so **memory is exercised as part of scoring**.
-- **Metrics:**
-  - **Routing accuracy** — did the router send the turn to the correct specialist?
-  - **Tool-call accuracy** — did the set of tools actually invoked match the expected tool? This rewards *both* calling the right tool when one is needed *and* correctly calling **no** tool when none is needed.
-  - **Task-completion rate** — did the final answer contain the expected fact/number (case-insensitive)? For open-ended chat scenarios, completion = a non-empty answer.
-- **Model:** local `gemma4:12b` at temperature 0.
+The repo includes a fixed set of 22 test scenarios in [`eval/scenarios.json`](eval/scenarios.json). Each scenario lists the message or messages to send, the route it should take, the tool it should or should not call, and text the final answer should contain. The set breaks down as 5 calculator, 4 unit conversion, 7 retrieval, 3 plain chat, and 3 multi-turn memory cases.
 
-Full per-scenario detail (including the actual answers) is written to [`results/results.json`](results/results.json); a readable report is in [`results/results.md`](results/results.md).
+The harness runs every scenario on its own thread against the compiled graph, using an in-memory checkpointer so the runs don't touch the on-disk memory database. Multi-turn scenarios replay their turns in order on a single thread, so memory is part of what gets tested.
+
+Three things are measured:
+
+- Routing accuracy: whether the router picked the right agent.
+- Tool-call accuracy: whether the tools actually called match what the scenario expected, including the scenarios where no tool should be called.
+- Task-completion rate: whether the final answer contains the expected fact or number, matched case-insensitively. For open-ended chat scenarios, any non-empty answer counts.
+
+Full per-scenario output is written to [`results/results.json`](results/results.json), with a readable summary in [`results/results.md`](results/results.md).
 
 ### Results
 
-<!-- RESULTS:AUTO — numbers below are copied from results/results.json (real run). -->
-From a real run on **2026-11-02** against all 22 held-out scenarios, using local `gemma4:12b` (Ollama, temperature 0), wall-clock **657.3 s** (~11 min):
+Latest run on 2026-11-02, 22 scenarios, `gemma4:12b` at temperature 0, about 11 minutes of wall-clock time:
 
 | Metric | Result |
 |---|---:|
-| **Routing accuracy** | **22 / 22 — 100.0%** |
-| **Tool-call accuracy** | **22 / 22 — 100.0%** |
-| **Task-completion rate** | **21 / 22 — 95.5%** |
+| Routing accuracy | 22 / 22 (100.0%) |
+| Tool-call accuracy | 22 / 22 (100.0%) |
+| Task-completion rate | 21 / 22 (95.5%) |
 
-**By route** (routing / completion): `tool_agent` 9/9 · 9/9 — `rag_agent` 8/8 · 7/8 — `chat_agent` 5/5 · 5/5.
-**Tool-call accuracy split:** right-tool-when-expected 9/9, correctly-no-tool 13/13.
+By route, routing and completion were: `tool_agent` 9/9 and 9/9, `rag_agent` 8/8 and 7/8, `chat_agent` 5/5 and 5/5. Tool-call accuracy was 9/9 where a tool was expected and 13/13 where none was.
 
-**The one failure, reported honestly:** `rag-oncall-stipend` — routing and tool-call *passed* (correctly routed to `rag_agent`, no tool), but completion *failed*: the expected fact ("$750" weekly on-call stipend) was not in the final answer because retrieval didn't surface the relevant chunk, so the agent answered *"I don't know"* instead of fabricating a number. The grounded-answer behavior worked as designed; the retrieval recall is the gap. It is left as a real failure rather than papered over.
+One scenario failed: `rag-oncall-stipend`. It routed correctly to the retrieval agent and called no tool, but the answer did not contain the expected figure. Retrieval did not surface the chunk that held the on-call stipend, so the agent said it did not know instead of guessing. This is a retrieval recall gap, and it is left in the results as it happened.
 
-Regenerate these numbers anytime with `.venv/bin/python scripts/run_eval.py`; they will overwrite [`results/`](results/).
-<!-- /RESULTS:AUTO -->
+To regenerate the numbers, run `.venv/bin/python scripts/run_eval.py`; it overwrites `results/`.
 
----
+## Scope and limitations
 
-## Limitations
-
-Read these before repeating any number from this project:
-
-- **Small scripted set, not a benchmark.** 22 hand-written scenarios validate routing/tool logic before deployment; they are **not** a statistically powered or production-scale benchmark. Treat the metrics as a smoke-level signal, not a leaderboard score.
-- **Single local model.** All numbers are for `gemma4:12b` via Ollama. A different model (or Ollama version) will produce different numbers — rerun the eval to get them.
-- **Keyword-based completion check.** Task completion is scored by case-insensitive substring match on the expected fact/number, not by semantic grading. It's objective and reproducible, but a correct answer phrased without the expected substring would be marked incomplete (and vice-versa in rare cases).
-- **Fictional corpus.** The handbook is invented to make retrieval testable; the RAG results say nothing about performance on real-world documents.
-- **LLM latency / determinism.** Temperature is 0 for stability, but local LLM outputs are not guaranteed bit-for-bit identical across runs; small metric fluctuations between runs are possible.
-
+- The test set is 22 hand-written scenarios. That is enough to check that routing and tool use behave as intended, but it is not a large or statistically rigorous benchmark.
+- All numbers come from one local model, `gemma4:12b`. A different model, or a different Ollama version, will give different results; rerun the evaluation to see them.
+- Completion is judged by substring match, not semantic grading. It is simple and repeatable, but a correct answer worded differently from the expected text would be counted as incomplete.
+- The corpus is fictional, so the retrieval results say nothing about performance on real documents.
+- Generation runs at temperature 0, but local model output is not guaranteed to be identical on every run, so small differences between runs are possible.
