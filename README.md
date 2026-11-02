@@ -174,5 +174,3 @@ Read these before repeating any number from this project:
 - **Fictional corpus.** The handbook is invented to make retrieval testable; the RAG results say nothing about performance on real-world documents.
 - **LLM latency / determinism.** Temperature is 0 for stability, but local LLM outputs are not guaranteed bit-for-bit identical across runs; small metric fluctuations between runs are possible.
 
-## License
-MIT (see `LICENSE` if present) — sample/portfolio project.
