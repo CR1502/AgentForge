@@ -92,15 +92,19 @@ docs/           # architecture & contracts
 
 ### Install
 ```bash
-# 1. Pull the local models (chat + embeddings)
+# 1. Clone
+git clone https://github.com/CR1502/AgentForge.git
+cd AgentForge
+
+# 2. Pull the local models (chat + embeddings)
 ollama pull gemma4:12b
 ollama pull nomic-embed-text
 
-# 2. Create the environment and install dependencies
+# 3. Create the environment and install dependencies
 uv venv --python 3.12
 uv pip install -r requirements.txt
 
-# 3. Build the vector store from the corpus
+# 4. Build the vector store from the corpus
 .venv/bin/python scripts/ingest.py --reset
 ```
 
