@@ -1,0 +1,10 @@
+# Pinned at install time from a real, working resolution (see README).
+# Loose constraints here; the committed lock reflects what actually ran.
+langgraph
+langchain
+langchain-core
+langchain-ollama
+langchain-chroma
+chromadb
+langgraph-checkpoint-sqlite
+pydantic
