@@ -1,0 +1,657 @@
+{
+  "metrics": {
+    "routing_accuracy": 1.0,
+    "tool_call_accuracy": 1.0,
+    "task_completion_rate": 0.9545454545454546,
+    "routing_passed": 22,
+    "tool_call_passed": 22,
+    "completion_passed": 21,
+    "num_scenarios": 22
+  },
+  "breakdowns": {
+    "by_expected_route": {
+      "tool_agent": {
+        "count": 9,
+        "routing_passed": 9,
+        "completion_passed": 9,
+        "routing_accuracy": 1.0,
+        "completion_rate": 1.0
+      },
+      "rag_agent": {
+        "count": 8,
+        "routing_passed": 8,
+        "completion_passed": 7,
+        "routing_accuracy": 1.0,
+        "completion_rate": 0.875
+      },
+      "chat_agent": {
+        "count": 5,
+        "routing_passed": 5,
+        "completion_passed": 5,
+        "routing_accuracy": 1.0,
+        "completion_rate": 1.0
+      }
+    },
+    "tool_call": {
+      "tool_expected": {
+        "count": 9,
+        "passed": 9,
+        "accuracy": 1.0
+      },
+      "no_tool_expected": {
+        "count": 13,
+        "passed": 13,
+        "accuracy": 1.0
+      }
+    }
+  },
+  "metadata": {
+    "llm_model": "gemma4:12b",
+    "embed_model": "nomic-embed-text",
+    "ollama_base_url": "http://localhost:11434",
+    "temperature": 0.0,
+    "num_scenarios": 22,
+    "timestamp": "2026-11-02T16:52:22.629368+00:00",
+    "wall_clock_seconds": 657.3
+  },
+  "scenarios": [
+    {
+      "id": "calc-divide-add",
+      "description": "Division then addition",
+      "turns": [
+        "What is 144 divided by 12, plus 7?"
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "calculator",
+      "actual_tools": [
+        "calculator"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "19"
+      ],
+      "actual_answer": "144 divided by 12, plus 7, is 19.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "What is 144 divided by 12, plus 7?",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "calculator"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calc-parenthesized-multiply",
+      "description": "Parentheses and multiplication",
+      "turns": [
+        "Calculate (15 + 27) * 3."
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "calculator",
+      "actual_tools": [
+        "calculator"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "126"
+      ],
+      "actual_answer": "The result of (15 + 27) * 3 is 126.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "Calculate (15 + 27) * 3.",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "calculator"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calc-power-subtract",
+      "description": "Exponent then subtraction",
+      "turns": [
+        "What is 2 to the power of 10 minus 24?"
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "calculator",
+      "actual_tools": [
+        "calculator"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "1000"
+      ],
+      "actual_answer": "2 to the power of 10 minus 24 is 1000.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "What is 2 to the power of 10 minus 24?",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "calculator"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calc-subtract-product",
+      "description": "Subtraction of a product",
+      "turns": [
+        "Compute 1000 - 17 * 23."
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "calculator",
+      "actual_tools": [
+        "calculator"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "609"
+      ],
+      "actual_answer": "The result of 1000 - 17 * 23 is 609.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "Compute 1000 - 17 * 23.",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "calculator"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calc-percentage-decimal",
+      "description": "Decimal result from percentage",
+      "turns": [
+        "What is 15% of 250?"
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "calculator",
+      "actual_tools": [
+        "calculator"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "37.5"
+      ],
+      "actual_answer": "15% of 250 is 37.5.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "What is 15% of 250?",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "calculator"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unit-km-to-miles",
+      "description": "Length km to mi",
+      "turns": [
+        "Convert 10 kilometers to miles."
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "unit_converter",
+      "actual_tools": [
+        "unit_converter"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "6.21"
+      ],
+      "actual_answer": "10 kilometers is equal to 6.2137 miles.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "Convert 10 kilometers to miles.",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "unit_converter"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unit-celsius-to-fahrenheit",
+      "description": "Temperature C to F",
+      "turns": [
+        "What is 100 degrees Celsius in Fahrenheit?"
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "unit_converter",
+      "actual_tools": [
+        "unit_converter"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "212"
+      ],
+      "actual_answer": "100 degrees Celsius is equal to 212.0 degrees Fahrenheit.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "What is 100 degrees Celsius in Fahrenheit?",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "unit_converter"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unit-kg-to-pounds",
+      "description": "Mass kg to lb",
+      "turns": [
+        "How many pounds is 5 kg?"
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "unit_converter",
+      "actual_tools": [
+        "unit_converter"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "11.02"
+      ],
+      "actual_answer": "5 kg is equal to 11.0231 pounds.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "How many pounds is 5 kg?",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "unit_converter"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unit-miles-to-km",
+      "description": "Length mi to km",
+      "turns": [
+        "Convert 10 miles to kilometers."
+      ],
+      "expected_route": "tool_agent",
+      "actual_route": "tool_agent",
+      "routing_pass": true,
+      "expected_tool": "unit_converter",
+      "actual_tools": [
+        "unit_converter"
+      ],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "16"
+      ],
+      "actual_answer": "10 miles is equal to 16.0934 kilometers.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "Convert 10 miles to kilometers.",
+          "route": "tool_agent",
+          "tool_calls_made": [
+            "unit_converter"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rag-pto-days",
+      "description": "Handbook PTO days",
+      "turns": [
+        "How many PTO days per year do Helix Dynamics employees get?"
+      ],
+      "expected_route": "rag_agent",
+      "actual_route": "rag_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "22"
+      ],
+      "actual_answer": "Full-time employees accrue 22 days of PTO per year.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "How many PTO days per year do Helix Dynamics employees get?",
+          "route": "rag_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "rag-ceo-name",
+      "description": "Handbook CEO",
+      "turns": [
+        "Who is the CEO of Helix Dynamics?"
+      ],
+      "expected_route": "rag_agent",
+      "actual_route": "rag_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "Velasquez"
+      ],
+      "actual_answer": "The current Chief Executive Officer of Helix Dynamics is Mara Velasquez.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "Who is the CEO of Helix Dynamics?",
+          "route": "rag_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "rag-founding-city",
+      "description": "Handbook founding city",
+      "turns": [
+        "In which city was Helix Dynamics founded?"
+      ],
+      "expected_route": "rag_agent",
+      "actual_route": "rag_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "Asheville"
+      ],
+      "actual_answer": "Helix Dynamics was founded in Asheville, North Carolina.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "In which city was Helix Dynamics founded?",
+          "route": "rag_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "rag-password-rotation",
+      "description": "Security policy password rotation",
+      "turns": [
+        "How often must employee passwords be rotated at Helix Dynamics?"
+      ],
+      "expected_route": "rag_agent",
+      "actual_route": "rag_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "90"
+      ],
+      "actual_answer": "Employee account passwords must be rotated every 90 days.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "How often must employee passwords be rotated at Helix Dynamics?",
+          "route": "rag_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "rag-platinum-sev1-response",
+      "description": "Support SLA Platinum Sev-1",
+      "turns": [
+        "What is the first response time target for a Platinum customer's Sev-1 issue?"
+      ],
+      "expected_route": "rag_agent",
+      "actual_route": "rag_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "15"
+      ],
+      "actual_answer": "The first-response time target for a Platinum customer's Sev-1 issue is 15 minutes.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "What is the first response time target for a Platinum customer's Sev-1 issue?",
+          "route": "rag_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "rag-startup-plan-price",
+      "description": "API pricing Startup plan",
+      "turns": [
+        "How much does the Helix Relay Startup plan cost per month?"
+      ],
+      "expected_route": "rag_agent",
+      "actual_route": "rag_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "249"
+      ],
+      "actual_answer": "The Helix Relay Startup plan costs $249 per month.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "How much does the Helix Relay Startup plan cost per month?",
+          "route": "rag_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "rag-oncall-stipend",
+      "description": "Engineering on-call stipend",
+      "turns": [
+        "What is the weekly on-call stipend at Helix Dynamics?"
+      ],
+      "expected_route": "rag_agent",
+      "actual_route": "rag_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "750"
+      ],
+      "actual_answer": "I don't know.",
+      "completion_pass": false,
+      "turn_trace": [
+        {
+          "input": "What is the weekly on-call stipend at Helix Dynamics?",
+          "route": "rag_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "chat-greeting",
+      "description": "Greeting",
+      "turns": [
+        "Hi there, how's it going?"
+      ],
+      "expected_route": "chat_agent",
+      "actual_route": "chat_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [],
+      "actual_answer": "I'm doing well, thank you for asking! How can I help you today?",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "Hi there, how's it going?",
+          "route": "chat_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "chat-octopus-fact",
+      "description": "General knowledge chit-chat",
+      "turns": [
+        "Tell me a fun fact about octopuses."
+      ],
+      "expected_route": "chat_agent",
+      "actual_route": "chat_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [],
+      "actual_answer": "Octopuses have three hearts and blue blood!",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "Tell me a fun fact about octopuses.",
+          "route": "chat_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "chat-opinion-language",
+      "description": "Opinion question",
+      "turns": [
+        "What do you think is the best programming language?"
+      ],
+      "expected_route": "chat_agent",
+      "actual_route": "chat_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [],
+      "actual_answer": "There isn't one \"best\" programming language; it depends entirely on what you want to build. For example, Python is excellent for data science and beginners, while Rust is great for performance and memory safety. The best language is the one that fits your specific goals!",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "What do you think is the best programming language?",
+          "route": "chat_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "memory-chat-codename",
+      "description": "Chat memory recall of codename",
+      "turns": [
+        "My project codename is Orion and my lucky number is 7.",
+        "What is my project codename?"
+      ],
+      "expected_route": "chat_agent",
+      "actual_route": "chat_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "Orion"
+      ],
+      "actual_answer": "Your project codename is Orion.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "My project codename is Orion and my lucky number is 7.",
+          "route": "chat_agent",
+          "tool_calls_made": []
+        },
+        {
+          "input": "What is my project codename?",
+          "route": "chat_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "memory-chat-city",
+      "description": "Chat memory recall of city",
+      "turns": [
+        "My name is Dana Okafor and I work in Lisbon.",
+        "Which city do I work in?"
+      ],
+      "expected_route": "chat_agent",
+      "actual_route": "chat_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "Lisbon"
+      ],
+      "actual_answer": "You work in Lisbon.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "My name is Dana Okafor and I work in Lisbon.",
+          "route": "chat_agent",
+          "tool_calls_made": []
+        },
+        {
+          "input": "Which city do I work in?",
+          "route": "chat_agent",
+          "tool_calls_made": []
+        }
+      ]
+    },
+    {
+      "id": "memory-context-then-rag",
+      "description": "Context-setting turn then RAG question",
+      "turns": [
+        "I'm comparing cloud message brokers.",
+        "What is the current GA version of Helix Relay?"
+      ],
+      "expected_route": "rag_agent",
+      "actual_route": "rag_agent",
+      "routing_pass": true,
+      "expected_tool": null,
+      "actual_tools": [],
+      "tool_call_pass": true,
+      "expected_answer_contains": [
+        "7.4"
+      ],
+      "actual_answer": "The current generally available version is Helix Relay 7.4, released on March 18, 2026.",
+      "completion_pass": true,
+      "turn_trace": [
+        {
+          "input": "I'm comparing cloud message brokers.",
+          "route": "chat_agent",
+          "tool_calls_made": []
+        },
+        {
+          "input": "What is the current GA version of Helix Relay?",
+          "route": "rag_agent",
+          "tool_calls_made": []
+        }
+      ]
+    }
+  ]
+}
