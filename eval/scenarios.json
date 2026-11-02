@@ -1,1 +1,263 @@
-[]
+[
+  {
+    "id": "calc-divide-add",
+    "description": "Division then addition",
+    "turns": [
+      "What is 144 divided by 12, plus 7?"
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "calculator",
+    "expected_answer_contains": [
+      "19"
+    ]
+  },
+  {
+    "id": "calc-parenthesized-multiply",
+    "description": "Parentheses and multiplication",
+    "turns": [
+      "Calculate (15 + 27) * 3."
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "calculator",
+    "expected_answer_contains": [
+      "126"
+    ]
+  },
+  {
+    "id": "calc-power-subtract",
+    "description": "Exponent then subtraction",
+    "turns": [
+      "What is 2 to the power of 10 minus 24?"
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "calculator",
+    "expected_answer_contains": [
+      "1000"
+    ]
+  },
+  {
+    "id": "calc-subtract-product",
+    "description": "Subtraction of a product",
+    "turns": [
+      "Compute 1000 - 17 * 23."
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "calculator",
+    "expected_answer_contains": [
+      "609"
+    ]
+  },
+  {
+    "id": "calc-percentage-decimal",
+    "description": "Decimal result from percentage",
+    "turns": [
+      "What is 15% of 250?"
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "calculator",
+    "expected_answer_contains": [
+      "37.5"
+    ]
+  },
+  {
+    "id": "unit-km-to-miles",
+    "description": "Length km to mi",
+    "turns": [
+      "Convert 10 kilometers to miles."
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "unit_converter",
+    "expected_answer_contains": [
+      "6.21"
+    ]
+  },
+  {
+    "id": "unit-celsius-to-fahrenheit",
+    "description": "Temperature C to F",
+    "turns": [
+      "What is 100 degrees Celsius in Fahrenheit?"
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "unit_converter",
+    "expected_answer_contains": [
+      "212"
+    ]
+  },
+  {
+    "id": "unit-kg-to-pounds",
+    "description": "Mass kg to lb",
+    "turns": [
+      "How many pounds is 5 kg?"
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "unit_converter",
+    "expected_answer_contains": [
+      "11.02"
+    ]
+  },
+  {
+    "id": "unit-miles-to-km",
+    "description": "Length mi to km",
+    "turns": [
+      "Convert 10 miles to kilometers."
+    ],
+    "expected_route": "tool_agent",
+    "expected_tool": "unit_converter",
+    "expected_answer_contains": [
+      "16"
+    ]
+  },
+  {
+    "id": "rag-pto-days",
+    "description": "Handbook PTO days",
+    "turns": [
+      "How many PTO days per year do Helix Dynamics employees get?"
+    ],
+    "expected_route": "rag_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "22"
+    ]
+  },
+  {
+    "id": "rag-ceo-name",
+    "description": "Handbook CEO",
+    "turns": [
+      "Who is the CEO of Helix Dynamics?"
+    ],
+    "expected_route": "rag_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "Velasquez"
+    ]
+  },
+  {
+    "id": "rag-founding-city",
+    "description": "Handbook founding city",
+    "turns": [
+      "In which city was Helix Dynamics founded?"
+    ],
+    "expected_route": "rag_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "Asheville"
+    ]
+  },
+  {
+    "id": "rag-password-rotation",
+    "description": "Security policy password rotation",
+    "turns": [
+      "How often must employee passwords be rotated at Helix Dynamics?"
+    ],
+    "expected_route": "rag_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "90"
+    ]
+  },
+  {
+    "id": "rag-platinum-sev1-response",
+    "description": "Support SLA Platinum Sev-1",
+    "turns": [
+      "What is the first response time target for a Platinum customer's Sev-1 issue?"
+    ],
+    "expected_route": "rag_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "15"
+    ]
+  },
+  {
+    "id": "rag-startup-plan-price",
+    "description": "API pricing Startup plan",
+    "turns": [
+      "How much does the Helix Relay Startup plan cost per month?"
+    ],
+    "expected_route": "rag_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "249"
+    ]
+  },
+  {
+    "id": "rag-oncall-stipend",
+    "description": "Engineering on-call stipend",
+    "turns": [
+      "What is the weekly on-call stipend at Helix Dynamics?"
+    ],
+    "expected_route": "rag_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "750"
+    ]
+  },
+  {
+    "id": "chat-greeting",
+    "description": "Greeting",
+    "turns": [
+      "Hi there, how's it going?"
+    ],
+    "expected_route": "chat_agent",
+    "expected_tool": null,
+    "expected_answer_contains": []
+  },
+  {
+    "id": "chat-octopus-fact",
+    "description": "General knowledge chit-chat",
+    "turns": [
+      "Tell me a fun fact about octopuses."
+    ],
+    "expected_route": "chat_agent",
+    "expected_tool": null,
+    "expected_answer_contains": []
+  },
+  {
+    "id": "chat-opinion-language",
+    "description": "Opinion question",
+    "turns": [
+      "What do you think is the best programming language?"
+    ],
+    "expected_route": "chat_agent",
+    "expected_tool": null,
+    "expected_answer_contains": []
+  },
+  {
+    "id": "memory-chat-codename",
+    "description": "Chat memory recall of codename",
+    "turns": [
+      "My project codename is Orion and my lucky number is 7.",
+      "What is my project codename?"
+    ],
+    "expected_route": "chat_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "Orion"
+    ]
+  },
+  {
+    "id": "memory-chat-city",
+    "description": "Chat memory recall of city",
+    "turns": [
+      "My name is Dana Okafor and I work in Lisbon.",
+      "Which city do I work in?"
+    ],
+    "expected_route": "chat_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "Lisbon"
+    ]
+  },
+  {
+    "id": "memory-context-then-rag",
+    "description": "Context-setting turn then RAG question",
+    "turns": [
+      "I'm comparing cloud message brokers.",
+      "What is the current GA version of Helix Relay?"
+    ],
+    "expected_route": "rag_agent",
+    "expected_tool": null,
+    "expected_answer_contains": [
+      "7.4"
+    ]
+  }
+]
