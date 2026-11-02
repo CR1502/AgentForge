@@ -1,10 +1,13 @@
-# Pinned at install time from a real, working resolution (see README).
-# Loose constraints here; the committed lock reflects what actually ran.
-langgraph
-langchain
-langchain-core
-langchain-ollama
-langchain-chroma
-chromadb
-langgraph-checkpoint-sqlite
-pydantic
+# Direct dependencies, pinned to the versions that actually ran the evaluation.
+# These are LangChain/LangGraph 1.x. For an exact transitive lock see
+# requirements.lock.txt (output of `uv pip freeze`).
+langgraph==1.2.19
+langchain==1.4.8
+langchain-core==1.7.4
+langchain-ollama==1.1.0
+langchain-chroma==1.1.0
+langchain-text-splitters==1.1.3
+chromadb==1.5.9
+langgraph-checkpoint-sqlite==3.1.3
+pydantic==2.14.2
+pytest==8.3.4
